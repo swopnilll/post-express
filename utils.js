@@ -6,7 +6,7 @@ const fetchPosts = async (limit, offset) => {
     try{
         const posts = await axios.get(PostsApiEndpoint);
 
-        const processedPosts = posts.data.map(post => {
+        const response = posts.data.slice(offset, limit + offset).map(post => {
             return {
                 id: post.id, 
                 title: post.title, 
@@ -14,9 +14,7 @@ const fetchPosts = async (limit, offset) => {
             }
         })
 
-        const paginatedPosts = processedPosts.slice(offset, limit + offset);
-
-        return paginatedPosts;
+        return response;
 
     } catch(error){
         console.error('Error fetching posts:', error);

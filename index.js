@@ -1,17 +1,31 @@
-
 import express from "express"
 
+import {authMiddlewareFunction, validateRequestMiddlewareFunction} from './middleware.js'
+
+import fetchPosts from './utils.js'
 
 const app = express();
 
+app.use(authMiddlewareFunction);
 
-app.get('/', async (req, res) => {
+app.use(validateRequestMiddlewareFunction);
 
-    res.send("<h1>Hello World!!!!</h1>")
+app.get('/fetch-posts', async (req, res) => {
+
+    try{
+        const { limit, offset } = req.query;
+
+        const posts = await fetchPosts(limit, offset);
+
+        res.send(posts);
+
+    } catch(error){
+        res.status(400).send({ error: error.message });
+    }
 
 })
 
-// Using the express object to listen to port 8000 for incoming requests
+
 app.listen(8000, async () => {
     console.log("The App is listening on port 8000!");
 });
